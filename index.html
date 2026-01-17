@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XITER TEAM | Professional Store</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --dark-bg: #060608;
+            --card-bg: #111116;
+            --accent: #25D366;
+            --tg-blue: #0088cc;
+            --warning: #ffcf33;
+            --error: #ff4d4d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        nav {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo { 
+            font-size: 1.4rem; 
+            font-weight: 900; 
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-links .proof-tab {
+            background: var(--accent);
+            color: #000;
+            padding: 8px 15px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+        }
+
+        header h1 {
+            font-size: clamp(2rem, 10vw, 4rem);
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #222;
+            transition: 0.4s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.2);
+        }
+
+        .product-card img { width: 100%; height: 250px; object-fit: cover; }
+        .details { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .details h2 { font-size: 1.3rem; margin-bottom: 15px; color: var(--primary); text-align: center; }
+        .price-list { margin-bottom: 20px; flex-grow: 1; }
+        .price-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333; font-size: 0.9rem; }
+        .price-val { color: #00ff88; font-weight: bold; }
+        .buy-now-btn { background: linear-gradient(45deg, var(--secondary), var(--primary)); color: #000; padding: 12px; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase; width: 100%; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); }
+        .modal-content { background: #111116; margin: 5% auto; padding: 25px; width: 95%; max-width: 450px; border-radius: 20px; border: 1px solid var(--primary); position: relative; overflow-y: auto; max-height: 90vh; }
+        
+        /* Special Note Styling */
+        .special-note {
+            background: rgba(255, 77, 77, 0.15);
+            border: 2px dashed var(--error);
+            color: #fff;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .payment-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin: 10px 0; border-left: 4px solid var(--primary); }
+        .payment-box h4 { font-size: 0.8rem; color: var(--primary); margin-bottom: 5px; text-transform: uppercase; }
+        .payment-box p { font-size: 0.8rem; color: #ccc; margin-bottom: 2px; }
+        .payment-box b { color: #fff; }
+        .warning-text { background: rgba(255, 207, 51, 0.1); color: var(--warning); padding: 10px; border-radius: 8px; font-size: 0.75rem; text-align: center; margin-bottom: 15px; border: 1px solid var(--warning); font-weight: bold; }
+        
+        .agent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .contact-opt { display: block; padding: 12px 5px; border-radius: 8px; text-decoration: none; color: #000; font-weight: 900; text-align: center; font-size: 0.75rem; text-transform: uppercase; }
+        .tg-opt { color: #fff; background: var(--tg-blue); }
+        .wa-opt { background: var(--accent); }
+        .close-btn { position: absolute; right: 20px; top: 10px; font-size: 30px; cursor: pointer; color: #ff4d4d; }
+
+        footer { background: #050505; padding: 60px 20px 20px; text-align: center; border-top: 1px solid #222; margin-top: 50px; }
+        .footer-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
+        .footer-col h4 { color: var(--primary); margin-bottom: 20px; text-transform: uppercase; }
+        .footer-col a { display: block; color: #aaa; text-decoration: none; margin-bottom: 10px; font-size: 0.85rem; }
+        .footer-col a:hover { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">XITER TEAM</div>
+    <div class="nav-links"><a href="https://whatsapp.com/channel/0029Vb7SUEc4CrflDiundo2C" target="_blank" class="proof-tab">BUY PROOF ✅</a></div>
+</nav>
+
+<header data-aos="fade-down">
+    <h1>XITER TEAM</h1>
+    <p>SRI LANKA'S NO.1 GAMING STORE</p>
+</header>
+
+<div class="container">
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/9kdDcN00/esing.jpg" alt="E SING">
+        <div class="details"><h2>E SING</h2><div class="price-list"><div class="price-item"><span>1 Year VIP</span> <span class="price-val">Rs. 3600</span></div></div>
+        <button class="buy-now-btn" onclick="openOrder('E SING', 'Rs. 3600')">BUY NOW</button></div>
+    </div>
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/twXwbC9r/drip.jpg" alt="DRIP CLIENT">
+        <div class="details"><h2>DRIP CLIENT</h2><div class="price-list"><div class="price-item"><span>Monthly</span> <span class="price-val">Rs. 3600</span></div></div>
+        <button class="buy-now-btn" onclick="openOrder('DRIP CLIENT', 'Rs. 3600')">BUY NOW</button></div>
+    </div>
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/fBWp7Qx/hgcheats.jpg" alt="HG CHEATS">
+        <div class="details"><h2>HG CHEATS</h2><div class="price-list"><div class="price-item"><span>30 Day</span> <span class="price-val">Rs. 3500</span></div></div>
+        <button class="buy-now-btn" onclick="openOrder('HG CHEATS', 'Rs. 3500')">BUY NOW</button></div>
+    </div>
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/B54Ffvc4/fluorite.jpg" alt="FLUORITE">
+        <div class="details"><h2>FLUORITE</h2><div class="price-list"><div class="price-item"><span>30 Day</span> <span class="price-val">Rs. 4500</span></div></div>
+        <button class="buy-now-btn" onclick="openOrder('FLUORITE', 'Rs. 4500')">BUY NOW</button></div>
+    </div>
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/WLGYd8k/brmods.jpg" alt="BR MODS">
+        <div class="details"><h2>BR MODS</h2><div class="price-list"><div class="price-item"><span>30 Day</span> <span class="price-val">Rs. 3500</span></div></div>
+        <button class="buy-now-btn" onclick="openOrder('BR MODS', 'Rs. 3500')">BUY NOW</button></div>
+    </div>
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/kVGZVcsG/haxcker.jpg" alt="HAXX CKER">
+        <div class="details"><h2>HAXX CKER</h2><div class="price-list"><div class="price-item"><span>Premium Hack</span> <span class="price-val">Contact</span></div></div>
+        <button class="buy-now-btn" onclick="openOrder('HAXX CKER', 'Contact Admin')">BUY NOW</button></div>
+    </div>
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/3YQwQfBt/patoteam.jpg" alt="PATO TEAM">
+        <div class="details"><h2>PATO TEAM</h2><div class="price-list"><div class="price-item"><span>Full Version</span> <span class="price-val">Contact</span></div></div>
+        <button class="buy-now-btn" onclick="openOrder('PATO TEAM', 'Contact Admin')">BUY NOW</button></div>
+    </div>
+</div>
+
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2 id="modalProdName" style="color:var(--primary); text-align: center;"></h2>
+        <p id="modalProdPrice" style="text-align: center; color: #00ff88; font-weight: bold; margin-bottom: 10px;"></p>
+        
+        <div class="special-note">
+            🔴 PAYMENT එක කළ පසු අනිවාර්යයෙන් WHATSAPP එකට රිසිට්පත (RECEIPT) එවන්න!
+        </div>
+
+        <div class="warning-text">⚠️ අනිවාර්යයෙන් වැඩියෙන් Rs.50 හෝ Rs.20 දමන්න!</div>
+        
+        <div class="payment-box">
+            <h4>🏦 Commercial Bank (Seeduwa)</h4>
+            <p>Acc No: <b>8012870680</b> | Name: <b>K. K. SAROJA</b></p>
+        </div>
+        <div class="payment-box">
+            <h4>🏢 HNB Bank (Kandana)</h4>
+            <p>Acc No: <b>119020266274</b> | Name: <b>H.H.D.N.S.PERERA</b></p>
+        </div>
+        <div class="payment-box">
+            <h4>📲 Ez Cash</h4>
+            <p>Number: <b>0743452791</b></p>
+        </div>
+        
+        <p style="font-size: 0.7rem; text-align: center; color: #aaa; margin-top: 10px;">රිසිට්පත එවීමට Agent කෙනෙකු තෝරන්න:</p>
+        <div class="agent-grid">
+            <a id="waSeer" href="#" class="contact-opt wa-opt" target="_blank">WA: SEER</a>
+            <a id="waSulthan" href="#" class="contact-opt wa-opt" target="_blank">WA: SULTHAN</a>
+            <a href="https://t.me/Seerxiter72" class="contact-opt tg-opt" target="_blank">TG: SEER</a>
+            <a href="https://t.me/Sulthanxiter" class="contact-opt tg-opt" target="_blank">TG: SULTHAN</a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h4>Support</h4>
+            <a href="https://t.me/Seerxiter72" target="_blank">SEER XITER (TG)</a>
+            <a href="https://t.me/Sulthanxiter" target="_blank">SULTHAN XITER (TG)</a>
+            <a href="https://t.me/Seerxitersulthanxiter" target="_blank">Official Channel 📢</a>
+        </div>
+        <div class="footer-col">
+            <h4>Groups</h4>
+            <a href="https://chat.whatsapp.com/H6O4PDG5Kdx4qtXKR9BmHu" target="_blank">WhatsApp Group 🛡️</a>
+        </div>
+        <div class="footer-col">
+            <h4>Proof & Updates</h4>
+            <a href="https://whatsapp.com/channel/0029Vb7SUEc4CrflDiundo2C" target="_blank">Buy Proof ✅</a>
+            <a href="https://whatsapp.com/channel/0029Vb6s9ITLNSa47KgnGg2v" target="_blank">Official Updates 🛡️</a>
+        </div>
+    </div>
+    <p style="opacity:0.3; margin-top:30px; font-size:0.7rem;">&copy; 2026 XITER TEAM SL</p>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 800, once: true });
+    function openOrder(name, price) {
+        document.getElementById('modalProdName').innerText = name;
+        document.getElementById('modalProdPrice').innerText = "Price: " + price;
+        const msg = encodeURIComponent("Hello XITER TEAM!\n\nI want to buy: " + name + "\n\nI have sent the money. Here is the slip:");
+        document.getElementById('waSeer').href = "https://wa.me/94767593724?text=" + msg;
+        document.getElementById('waSulthan').href = "https://wa.me/94775098664?text=" + msg;
+        document.getElementById('paymentModal').style.display = "block";
+    }
+    function closeModal() { document.getElementById('paymentModal').style.display = "none"; }
+    window.onclick = function(event) { if (event.target == document.getElementById('paymentModal')) closeModal(); }
+</script>
+</body>
+</html>
