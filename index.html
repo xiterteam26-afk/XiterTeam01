@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XITER TEAM | Professional Store</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2fe; --secondary: #4facfe; --dark-bg: #050507;
+            --card-bg: #111116; --accent: #25D366; --tg-blue: #0088cc;
+            --warning: #ffcf33; --error: #ff4d4d; --glass: rgba(255, 255, 255, 0.03);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--dark-bg); color: white; line-height: 1.6; overflow-x: hidden; }
+        
+        /* Premium Background Effect */
+        body::before { 
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050507 100%); z-index: -1; 
+        }
+
+        nav { background: rgba(0, 0, 0, 0.9); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(15px); }
+        .logo { font-family: 'Syncopate', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--primary); letter-spacing: 4px; text-shadow: 0 0 15px var(--primary); }
+        .proof-tab { background: linear-gradient(45deg, #128C7E, var(--accent)); color: #000; padding: 10px 25px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 0.8rem; box-shadow: 0 0 15px var(--accent); }
+
+        header { text-align: center; padding: 60px 20px; }
+        header h1 { font-family: 'Syncopate', sans-serif; font-size: clamp(2rem, 8vw, 4rem); margin-bottom: 15px; color: #fff; text-shadow: 0 0 40px var(--primary); letter-spacing: 5px; }
+        .platform-badge { background: var(--glass); padding: 8px 25px; border-radius: 50px; font-size: 0.85rem; border: 1px solid var(--primary); color: var(--primary); display: inline-block; letter-spacing: 2px; }
+
+        /* Monthly User Counter Section */
+        .user-counter { margin-top: 30px; display: flex; justify-content: center; gap: 20px; }
+        .counter-box { background: rgba(255,255,255,0.05); padding: 15px 30px; border-radius: 20px; border-bottom: 3px solid var(--primary); }
+        .counter-box h3 { font-size: 1.5rem; color: #fff; }
+        .counter-box p { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+
+        .official-links { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 25px; }
+        .social-tag { background: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 12px; font-size: 0.75rem; text-decoration: none; color: #fff; border: 1px solid #333; transition: 0.3s; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        .social-tag:hover { border-color: var(--primary); background: rgba(0, 242, 254, 0.1); transform: translateY(-3px); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .product-card { background: var(--card-bg); border-radius: 30px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1); }
+        .product-card:hover { transform: translateY(-15px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(0, 242, 254, 0.3); }
+        .product-card img { width: 100%; height: 260px; object-fit: cover; }
+
+        .details { padding: 30px; }
+        .details h2 { font-family: 'Syncopate', sans-serif; font-size: 1.3rem; color: #fff; text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; letter-spacing: 2px; }
+        .price-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .price-val { color: #00ff88; font-weight: 800; }
+        
+        .buy-now-btn { background: linear-gradient(45deg, var(--secondary), var(--primary)); color: #000; padding: 18px; border: none; border-radius: 18px; font-weight: 900; cursor: pointer; text-transform: uppercase; width: 100%; margin-top: 20px; transition: 0.4s; }
+        .buy-now-btn:hover { box-shadow: 0 0 25px var(--primary); transform: scale(1.02); }
+
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); }
+        .modal-content { background: #0c0c12; margin: 5% auto; padding: 35px; width: 92%; max-width: 480px; border-radius: 40px; border: 1px solid var(--primary); position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-btn { position: absolute; right: 25px; top: 15px; font-size: 35px; cursor: pointer; color: var(--error); }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.8rem; color: var(--primary); margin-bottom: 8px; font-weight: 800; }
+        .form-group input, .form-group select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: #000; color: #fff; outline: none; }
+
+        .special-note { background: rgba(255, 77, 77, 0.1); border: 1px dashed var(--error); color: #fff; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; font-size: 0.8rem; }
+        .payment-box { background: var(--glass); padding: 20px; border-radius: 20px; margin-bottom: 12px; border-left: 5px solid var(--primary); transition: 0.3s; }
+        .payment-box:hover { background: rgba(255,255,255,0.07); }
+        .payment-box h4 { font-size: 0.85rem; color: var(--primary); text-transform: uppercase; margin-bottom: 5px; }
+        .payment-box p { font-size: 0.9rem; margin: 2px 0; font-weight: 600; }
+
+        .upload-section { border: 2px dashed #444; padding: 25px; border-radius: 20px; text-align: center; margin: 20px 0; cursor: pointer; transition: 0.3s; }
+        .upload-section:hover { border-color: var(--primary); background: rgba(0,242,254,0.05); }
+        #previewImg { max-width: 100%; max-height: 180px; display: none; margin: 15px auto; border-radius: 15px; border: 1px solid var(--primary); }
+        .loading-msg { color: var(--warning); font-size: 0.85rem; display: none; text-align: center; margin-bottom: 15px; font-weight: 700; }
+
+        .agent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .contact-btn { display: block; padding: 14px; border-radius: 15px; text-decoration: none; text-align: center; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: #fff; transition: 0.3s; }
+        .wa-btn { background: var(--accent); color: #000; }
+        .tg-btn { background: var(--tg-blue); }
+
+        footer { text-align: center; padding: 40px; background: #050505; border-top: 1px solid #222; margin-top: 50px; font-size: 0.8rem; color: #555; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">XITER TEAM</div>
+    <a href="https://whatsapp.com/channel/0029Vb6s9ITLNSa47KgnGg2v" target="_blank" class="proof-tab">BUY PROOF ✅</a>
+</nav>
+
+<header data-aos="zoom-out">
+    <h1>XITER TEAM</h1>
+    <div class="platform-badge">PC • ANDROID • IOS • ACTIVE ✅</div>
+
+    <div class="user-counter">
+        <div class="counter-box">
+            <h3>4,850+</h3>
+            <p>Monthly Users</p>
+        </div>
+        <div class="counter-box">
+            <h3>100%</h3>
+            <p>Safe & Secure</p>
+        </div>
+    </div>
+    
+    <div class="official-links">
+        <a href="https://whatsapp.com/channel/0029Vb6s9ITLNSa47KgnGg2v" target="_blank" class="social-tag">🟢 WA Channel</a>
+        <a href="https://chat.whatsapp.com/H6O4PDG5Kdx4qtXKR9BmHu" target="_blank" class="social-tag">👥 WA Group</a>
+        <a href="https://t.me/Seerxitersulthanxiter" target="_blank" class="social-tag">🔵 TG Channel</a>
+    </div>
+</header>
+
+<div class="container">
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/9kdDcN00/esing.jpg">
+        <div class="details">
+            <h2>E SIGN</h2>
+            <div class="price-item"><span>1 YEAR</span> <span class="price-val">Rs. 3500</span></div>
+            <button class="buy-now-btn" onclick="openOrder('E SIGN', ['1 YEAR - Rs. 3500'])">BUY NOW</button>
+        </div>
+    </div>
+
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/B54Ffvc4/fluorite.jpg">
+        <div class="details">
+            <h2>FLUORITE</h2>
+            <div class="price-item"><span>1 DAY</span> <span class="price-val">Rs. 1000</span></div>
+            <div class="price-item"><span>7 DAY</span> <span class="price-val">Rs. 2500</span></div>
+            <div class="price-item"><span>30 DAY</span> <span class="price-val">Rs. 4500</span></div>
+            <button class="buy-now-btn" onclick="openOrder('FLUORITE', ['1 DAY - Rs. 1000', '7 DAY - Rs. 2500', '30 DAY - Rs. 4500'])">BUY NOW</button>
+        </div>
+    </div>
+
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/twXwbC9r/drip.jpg">
+        <div class="details">
+            <h2>DRIP CLIENT</h2>
+            <div class="price-item"><span>1 DAY</span> <span class="price-val">Rs. 700</span></div>
+            <div class="price-item"><span>7 DAY</span> <span class="price-val">Rs. 1700</span></div>
+            <div class="price-item"><span>15 DAY</span> <span class="price-val">Rs. 2100</span></div>
+            <div class="price-item"><span>31 DAY</span> <span class="price-val">Rs. 3500</span></div>
+            <button class="buy-now-btn" onclick="openOrder('DRIP CLIENT', ['1 DAY - Rs. 700', '7 DAY - Rs. 1700', '15 DAY - Rs. 2100', '31 DAY - Rs. 3500'])">BUY NOW</button>
+        </div>
+    </div>
+
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/WLGYd8k/brmods.jpg">
+        <div class="details">
+            <h2>BR MODS</h2>
+            <div class="price-item"><span>1 DAY</span> <span class="price-val">Rs. 700</span></div>
+            <div class="price-item"><span>7 DAY</span> <span class="price-val">Rs. 1700</span></div>
+            <div class="price-item"><span>30 DAY</span> <span class="price-val">Rs. 3500</span></div>
+            <button class="buy-now-btn" onclick="openOrder('BR MODS', ['1 DAY - Rs. 700', '7 DAY - Rs. 1700', '30 DAY - Rs. 3500'])">BUY NOW</button>
+        </div>
+    </div>
+
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/fBWp7Qx/hgcheats.jpg">
+        <div class="details">
+            <h2>HG CHEATS</h2>
+            <div class="price-item"><span>10 DAY</span> <span class="price-val">Rs. 1800</span></div>
+            <div class="price-item"><span>30 DAY</span> <span class="price-val">Rs. 3500</span></div>
+            <button class="buy-now-btn" onclick="openOrder('HG CHEATS', ['10 DAY - Rs. 1800', '30 DAY - Rs. 3500'])">BUY NOW</button>
+        </div>
+    </div>
+
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/kVGZVcsG/haxcker.jpg">
+        <div class="details">
+            <h2>HAXX CKER</h2>
+            <div class="price-item"><span>PREMIUM</span> <span class="price-val">CONTACT ADMIN</span></div>
+            <button class="buy-now-btn" onclick="openOrder('HAXX CKER', ['PREMIUM - CONTACT ADMIN'])">BUY NOW</button>
+        </div>
+    </div>
+
+    <div class="product-card" data-aos="fade-up">
+        <img src="https://i.ibb.co/3YQwQfBt/patoteam.jpg">
+        <div class="details">
+            <h2>PATO TEAM</h2>
+            <div class="price-item"><span>FULL PACK</span> <span class="price-val">CONTACT ADMIN</span></div>
+            <button class="buy-now-btn" onclick="openOrder('PATO TEAM', ['FULL PACK - CONTACT ADMIN'])">BUY NOW</button>
+        </div>
+    </div>
+</div>
+
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">×</span>
+        <h2 id="modalTitle" style="color:var(--primary); text-align: center; margin-bottom: 25px; font-family: 'Syncopate';">CHECKOUT</h2>
+        
+        <div id="formSection">
+            <div class="form-group"><label>YOUR NAME:</label><input type="text" id="userName" placeholder="Full Name"></div>
+            <div class="form-group"><label>WHATSAPP NUMBER:</label><input type="tel" id="userPhone" placeholder="+94 7X XXX XXXX"></div>
+            <div class="form-group"><label>SELECT PLAN:</label><select id="planList"></select></div>
+            <button class="buy-now-btn" onclick="submitOrder()">CONFIRM & VIEW PAYMENT</button>
+        </div>
+
+        <div id="paymentSection" style="display:none;">
+            <div class="special-note">🔴 රිසිට්පත සහ Ref Number ඇතුළත් කර අවසානයේ එන WhatsApp පණිවිඩය අපට එවන්න!</div>
+            
+            <div class="payment-box">
+                <h4>🏦 Commercial Bank</h4>
+                <p>Acc: 8012870680</p><p>Name: K. K. SAROJA</p>
+            </div>
+            <div class="payment-box">
+                <h4>🏢 HNB Bank</h4>
+                <p>Acc: 119020266274</p><p>Name: H.H.D.N.S.PERERA</p>
+            </div>
+            <div class="payment-box">
+                <h4>📲 Ez Cash</h4>
+                <p>Number: 0743452791</p>
+            </div>
+
+            <div style="text-align:center; margin:10px 0; font-size: 0.75rem; color: #888;">OR CONTACT VIA TELEGRAM</div>
+            <div class="agent-grid">
+                <a href="https://t.me/Seerxiter72" class="contact-btn tg-btn" target="_blank">TG: SEER</a>
+                <a href="https://t.me/Sulthanxiter" class="contact-btn tg-btn" target="_blank">TG: SULTHAN</a>
+            </div>
+
+            <div class="form-group" style="margin-top:20px;">
+                <label>REFERENCE / TRANSACTION NUMBER:</label>
+                <input type="text" id="refNumber" placeholder="Enter Ref No from Receipt" style="border: 2px solid var(--primary);">
+            </div>
+
+            <div class="upload-section" onclick="document.getElementById('receiptInput').click()">
+                <p id="uploadText">📸 Click to Upload Receipt Photo</p>
+                <input type="file" id="receiptInput" accept="image/*" style="display:none" onchange="previewReceipt()">
+                <img id="previewImg">
+            </div>
+            <div id="loadingMsg" class="loading-msg">⏳ Validating & Sending to Admin...</div>
+            <button class="buy-now-btn" id="finalBtn" onclick="sendReceiptToBot()">SUBMIT & CHAT WITH ADMIN</button>
+
+            <div class="agent-grid">
+                <a href="https://wa.me/94767593724" class="contact-btn wa-btn" target="_blank">WA: SEER</a>
+                <a href="https://wa.me/94775098664" class="contact-btn wa-btn" target="_blank">WA: SULTHAN</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer><p>&copy; 2026 XITER TEAM OFFICIAL STORE. ALL RIGHTS RESERVED.</p></footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 1000, once: true });
+    let selectedProduct = "";
+
+    function openOrder(name, plans) {
+        selectedProduct = name;
+        document.getElementById('modalTitle').innerText = name;
+        const list = document.getElementById('planList');
+        list.innerHTML = "";
+        plans.forEach(p => { let o = document.createElement('option'); o.value = p; o.innerText = p; list.appendChild(o); });
+        document.getElementById('formSection').style.display = "block";
+        document.getElementById('paymentSection').style.display = "none";
+        document.getElementById('orderModal').style.display = "block";
+    }
+
+    function submitOrder() {
+        const name = document.getElementById('userName').value;
+        const phone = document.getElementById('userPhone').value;
+        if(name.length < 3 || phone.length < 5) { alert("Please enter valid details!"); return; }
+        document.getElementById('formSection').style.display = "none";
+        document.getElementById('paymentSection').style.display = "block";
+    }
+
+    function previewReceipt() {
+        const file = document.getElementById('receiptInput').files[0];
+        const preview = document.getElementById('previewImg');
+        const text = document.getElementById('uploadText');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => { preview.src = e.target.result; preview.style.display = "block"; text.innerText = "✅ Receipt Attached"; }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    async function sendReceiptToBot() {
+        const fileInput = document.getElementById('receiptInput');
+        const refNum = document.getElementById('refNumber').value;
+        const name = document.getElementById('userName').value;
+        const phone = document.getElementById('userPhone').value;
+        const plan = document.getElementById('planList').value;
+
+        if (!refNum || refNum.trim().length < 3) { alert("Please enter valid Ref Number."); return; }
+        if (!fileInput.files[0]) { alert("Please upload receipt."); return; }
+
+        document.getElementById('loadingMsg').style.display = "block";
+        document.getElementById('finalBtn').disabled = true;
+
+        const token = "8227278595:AAHT0dqsXl-zVwAj-FXnI1u9WhoyFlfDL2Q";
+        const chatId = "6810255100";
+        
+        const formData = new FormData();
+        formData.append('chat_id', chatId);
+        formData.append('photo', fileInput.files[0]);
+        formData.append('caption', `🔥 *PAID ORDER - XITER TEAM*\n\n👤 Name: ${name}\n📞 Phone: ${phone}\n📦 Item: ${selectedProduct}\n💎 Plan: ${plan}\n🆔 Ref No: ${refNum}`);
+        formData.append('parse_mode', 'Markdown');
+
+        try {
+            await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+            
+            // Success Redirect
+            const waMsg = encodeURIComponent(`Hello XITER TEAM! 👋\n\nI just paid for my order.\n\n👤 Name: ${name}\n📦 Item: ${selectedProduct}\n💎 Plan: ${plan}\n🆔 Ref No: ${refNum}\n\nI have uploaded the receipt to your bot. Please check.`);
+            
+            window.location.href = `https://wa.me/94775098664?text=${waMsg}`;
+            
+        } catch (e) {
+            alert("❌ Error! Check your connection.");
+        } finally {
+            document.getElementById('loadingMsg').style.display = "none";
+            document.getElementById('finalBtn').disabled = false;
+        }
+    }
+
+    function closeModal() { document.getElementById('orderModal').style.display = "none"; }
+</script>
+</body>
+</html>
