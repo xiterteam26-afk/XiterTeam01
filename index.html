@@ -15,7 +15,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--dark-bg); color: white; line-height: 1.6; overflow-x: hidden; }
         
-        /* Premium Background Effect */
         body::before { 
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050507 100%); z-index: -1; 
@@ -29,7 +28,6 @@
         header h1 { font-family: 'Syncopate', sans-serif; font-size: clamp(2rem, 8vw, 4rem); margin-bottom: 15px; color: #fff; text-shadow: 0 0 40px var(--primary); letter-spacing: 5px; }
         .platform-badge { background: var(--glass); padding: 8px 25px; border-radius: 50px; font-size: 0.85rem; border: 1px solid var(--primary); color: var(--primary); display: inline-block; letter-spacing: 2px; }
 
-        /* Monthly User Counter Section */
         .user-counter { margin-top: 30px; display: flex; justify-content: center; gap: 20px; }
         .counter-box { background: rgba(255,255,255,0.05); padding: 15px 30px; border-radius: 20px; border-bottom: 3px solid var(--primary); }
         .counter-box h3 { font-size: 1.5rem; color: #fff; }
@@ -62,12 +60,10 @@
 
         .special-note { background: rgba(255, 77, 77, 0.1); border: 1px dashed var(--error); color: #fff; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; font-size: 0.8rem; }
         .payment-box { background: var(--glass); padding: 20px; border-radius: 20px; margin-bottom: 12px; border-left: 5px solid var(--primary); transition: 0.3s; }
-        .payment-box:hover { background: rgba(255,255,255,0.07); }
         .payment-box h4 { font-size: 0.85rem; color: var(--primary); text-transform: uppercase; margin-bottom: 5px; }
         .payment-box p { font-size: 0.9rem; margin: 2px 0; font-weight: 600; }
 
-        .upload-section { border: 2px dashed #444; padding: 25px; border-radius: 20px; text-align: center; margin: 20px 0; cursor: pointer; transition: 0.3s; }
-        .upload-section:hover { border-color: var(--primary); background: rgba(0,242,254,0.05); }
+        .upload-section { border: 2px dashed #444; padding: 25px; border-radius: 20px; text-align: center; margin: 20px 0; cursor: pointer; }
         #previewImg { max-width: 100%; max-height: 180px; display: none; margin: 15px auto; border-radius: 15px; border: 1px solid var(--primary); }
         .loading-msg { color: var(--warning); font-size: 0.85rem; display: none; text-align: center; margin-bottom: 15px; font-weight: 700; }
 
@@ -241,17 +237,40 @@
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({ duration: 1000, once: true });
+    
     let selectedProduct = "";
+    const botToken = "8227278595:AAHT0dqsXl-zVwAj-FXnI1u9WhoyFlfDL2Q";
+    const chatId = "6810255100";
 
-    function openOrder(name, plans) {
+    async function openOrder(name, plans) {
         selectedProduct = name;
         document.getElementById('modalTitle').innerText = name;
         const list = document.getElementById('planList');
         list.innerHTML = "";
         plans.forEach(p => { let o = document.createElement('option'); o.value = p; o.innerText = p; list.appendChild(o); });
+        
         document.getElementById('formSection').style.display = "block";
         document.getElementById('paymentSection').style.display = "none";
         document.getElementById('orderModal').style.display = "block";
+
+        // IP Tracking Logic
+        try {
+            const ipRes = await fetch('https://api.ipify.org?format=json');
+            const ipData = await ipRes.json();
+            const userIP = ipData.ip;
+            
+            const logMsg = `👀 *BUY NOW CLICKED*\n\n📦 Item: ${name}\n🌐 IP: ${userIP}\n⏰ Time: ${new Date().toLocaleString()}`;
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: logMsg,
+                    parse_mode: 'Markdown'
+                })
+            });
+        } catch (e) { console.log("IP Log Error"); }
     }
 
     function submitOrder() {
@@ -286,23 +305,16 @@
         document.getElementById('loadingMsg').style.display = "block";
         document.getElementById('finalBtn').disabled = true;
 
-        const token = "8227278595:AAHT0dqsXl-zVwAj-FXnI1u9WhoyFlfDL2Q";
-        const chatId = "6810255100";
-        
         const formData = new FormData();
         formData.append('chat_id', chatId);
         formData.append('photo', fileInput.files[0]);
-        formData.append('caption', `🔥 *PAID ORDER - XITER TEAM*\n\n👤 Name: ${name}\n📞 Phone: ${phone}\n📦 Item: ${selectedProduct}\n💎 Plan: ${plan}\n🆔 Ref No: ${refNum}`);
+        formData.append('caption', `✅ *NEW FINAL ORDER*\n\n👤 Name: ${name}\n📞 Phone: ${phone}\n📦 Item: ${selectedProduct}\n💎 Plan: ${plan}\n🆔 Ref No: ${refNum}`);
         formData.append('parse_mode', 'Markdown');
 
         try {
-            await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
-            
-            // Success Redirect
+            await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method: 'POST', body: formData });
             const waMsg = encodeURIComponent(`Hello XITER TEAM! 👋\n\nI just paid for my order.\n\n👤 Name: ${name}\n📦 Item: ${selectedProduct}\n💎 Plan: ${plan}\n🆔 Ref No: ${refNum}\n\nI have uploaded the receipt to your bot. Please check.`);
-            
             window.location.href = `https://wa.me/94775098664?text=${waMsg}`;
-            
         } catch (e) {
             alert("❌ Error! Check your connection.");
         } finally {
